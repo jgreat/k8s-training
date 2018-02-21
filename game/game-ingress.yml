@@ -1,0 +1,15 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: game
+  annotations:
+    io.rancher.scheduler.global: "true"
+spec:
+  rules:
+  - host: game.jgreat.me
+    http:
+      paths:
+      - backend:
+          serviceName: game
+          servicePort: 80
+

@@ -1,0 +1,28 @@
+#cloud-config
+rancher:
+  resize_device: /dev/vda
+  services:
+    rancher-server:
+      image: rancher/server:stable
+      expose:
+        - 8080
+      restart: unless-stopped
+      volumes:
+        - /data/rancher-server/mysql:/var/lib/mysql
+    https:
+      image: tecnativa/haproxy-letsencrypt
+      environment:
+        PORT: 8080
+        DOMAINS: ${server_name}
+        EMAIL: ${email}
+        STAGING: "${staging}"
+        CONTINUE_ON_CERTONLY_FAILURE: "false"
+      links:
+        - rancher-server:www
+      ports:
+        - "80:80"
+        - "443:443"
+      restart: unless-stopped
+      volumes:
+        - /data/rancher-server/https/letsencrypt:/etc/letsencrypt
+        - /data/rancher-server/https/cronstamps:/var/spool/cron/cronstamps

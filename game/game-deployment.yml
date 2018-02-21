@@ -1,0 +1,29 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kubernetes.io/change-cause: kubectl run game --image=jgreat/2048:0.0.1 --port=80
+      --replicas=3 --record=true --dry-run=true --output=yaml
+  creationTimestamp: null
+  labels:
+    run: game
+  name: game
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      run: game
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        run: game
+    spec:
+      containers:
+      - image: jgreat/2048:0.0.1
+        name: game
+        ports:
+        - containerPort: 80
+        resources: {}
+status: {}
