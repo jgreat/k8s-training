@@ -105,7 +105,6 @@ Kubernetes is just the start, we also provide some extras
 Copy this config into `~/.kube/config`
 
 > **Note:** If you have a lot of Kubernetes contexts use a shell that will help keep track of which context you are in.
->
 > I'm using ZSH with oh-my-zsh framework with the Spaceship theme
 
 ## Lets run something
