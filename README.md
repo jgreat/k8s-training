@@ -116,13 +116,13 @@ Lets just jump in and get something running.
 
 `kubectl run` will create some of the lower level objects and abstractions required to get workloads running.
 
-``` shell
+``` bash
 kubectl run game --image=jgreat/2048:0.0.1 --port=80 --replicas 3
 ```
 
 ## So what did this do?
 
-``` shell
+``` bash
 kubectl get all
 ```
 
@@ -140,25 +140,25 @@ If this is confusing, don't worry about it too much. For the sake of this demo a
 
 Show all the pods
 
-``` shell
+``` bash
 kubectl get pod
 ```
 
 Show details of a pod
 
-``` shell
+``` bash
 kubectl describe pod game-...
 ```
 
 Just like docker we can run an exec and get a shell in the pod
 
-``` shell
+``` bash
 kubectl exec -it game-... sh
 ```
 
 Again just like docker we can grab the logs from a pod
 
-``` shell
+``` bash
 kubectl logs -f game-...
 ```
 
@@ -166,7 +166,7 @@ kubectl logs -f game-...
 
 A replicaSet is an object used to manage the lifecycle and scale (replicas) of a pod.
 
-``` shell
+``` bash
 kubectl get replicaset game-...
 ```
 
@@ -182,7 +182,7 @@ So what `run` really does is create a deployment.
 
 The purpose of the Deployment object is to manage the release of new versions of your applications. Kubernetes tracks the history of deployments and allows you the ability to undo a "rollout"
 
-``` shell
+``` bash
 kubectl get deployment game
 ```
 
@@ -192,7 +192,7 @@ So far I've just shown you creating resources with some one off commands, but th
 
  Every object in Kubernetes can be described with a yaml document. This is a manifest.
 
-``` shell
+``` bash
 kubectl get deployment game -o yaml
 ```
 
@@ -206,7 +206,7 @@ kubectl delete deployment game
 
 Since what we actually did with `kubectl run` was create a deployment, lets go ahead and create a manifest for that deployment.  The easiest way to get started with this is to use the same `run` command we used to create our initial deployment but add the `--dry-run` and the `-o yaml` options. We will redirect the output to a file.
 
-``` shell
+``` bash
 kubectl run game --image=jgreat/2048:0.0.1 --port=80 --replicas 3 --dry-run -o yaml > game-deployment.yml
 ```
 
@@ -214,7 +214,7 @@ kubectl run game --image=jgreat/2048:0.0.1 --port=80 --replicas 3 --dry-run -o y
 
 Lets create that deployment with our new yml file.
 
-``` shell
+``` bash
 kubectl apply -f game-deployment.yml
 ```
 
@@ -222,7 +222,7 @@ kubectl apply -f game-deployment.yml
 
 Lets edit this deployment
 
-``` shell
+``` bash
 vi game-deployment.yml
 ```
 
@@ -232,19 +232,19 @@ Lets apply the updated manifest.
 
 Change the image value
 
-``` shell
+``` bash
 kubectl apply -f game-deployment.yml
 ```
 
 ### Show history
 
-``` shell
+``` bash
 kubectl rollout history deployment game
 ```
 
 ### Rollback new version
 
-``` shell
+``` bash
 kubectl rollout undo deployment/game
 ```
 
@@ -262,13 +262,13 @@ and they also load balancing for the connections to your pods
 
 Launch another workload:
 
-``` shell
+``` bash
 kubectl apply -f ../shell/shell-deployment.yml
 ```
 
 Shell into the pod
 
-``` shell
+``` bash
 kubectl exec -it shell-f45869cfb-krsj7 bash
 ```
 
@@ -276,11 +276,11 @@ Curl a pod...But that's not what we really want, we don't want to just connect t
 
 Show service manifest
 
-``` shell
+``` bash
 vi game-service.yml
 ```
 
-``` shell
+``` bash
 kubectl apply -f game-service.yml
 ```
 
@@ -296,13 +296,13 @@ Ingresses are layer 7 capable proxy services.
 
 Rancher comes with a built in ingress that is based on HAproxy.
 
-``` shell
+``` bash
 kubectl apply -f game-ingress.yml
 ```
 
 show ingress
 
-``` shell
+``` bash
 kubectl get ingress game -o wide
 ```
 
