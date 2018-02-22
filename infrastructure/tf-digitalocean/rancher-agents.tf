@@ -97,3 +97,11 @@ resource "aws_route53_record" "rancher_game" {
   ttl     = "300"
   records = ["${digitalocean_droplet.rancher_agent.*.ipv4_address}"]
 }
+
+resource "aws_route53_record" "rancher_nginx" {
+  zone_id = "${data.aws_route53_zone.dns_zone.zone_id}"
+  name    = "nginx"
+  type    = "A"
+  ttl     = "300"
+  records = ["${digitalocean_droplet.rancher_agent.*.ipv4_address}"]
+}

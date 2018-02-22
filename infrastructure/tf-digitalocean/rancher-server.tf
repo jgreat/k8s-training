@@ -36,12 +36,14 @@ resource "digitalocean_firewall" "rancher_server" {
     {
       protocol         = "tcp"
       port_range       = "80"
-      source_addresses = ["0.0.0.0/0", "::/0"]
+      source_addresses = ["${chomp(data.http.my_ip.body)}/32"]
+      source_tags      = ["${digitalocean_tag.rancher_agent.name}"]
     },
     {
       protocol         = "tcp"
       port_range       = "443"
-      source_addresses = ["0.0.0.0/0", "::/0"]
+      source_addresses = ["${chomp(data.http.my_ip.body)}/32"]
+      source_tags      = ["${digitalocean_tag.rancher_agent.name}"]
     },
   ]
 

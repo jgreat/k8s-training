@@ -11,22 +11,20 @@
 * Config maps
 * Ingresses
 
-## Setting up Rancher
+## Introduction
 
-I have prepared 4 VMs ahead of time.
+This training is meant to give you a good introduction to some of the Kubernetes concepts and patterns. Its not by any means a complete picture of all the things Kubernetes can do.
+
+So lets get to it.
+
+I have prepared few VMs and pre-pulled the required images ahead of time, just to speed things up. If you are interested in the gory details, check out the Git repo.
 
 * 1 server
 * 3 agents
 
-Rancher's documentation has some recommendations around sizing, but the only real requirement is a fairly modern version of Linux and a compatible version of Docker.
-
-> **Note**: The Terraform templates I used to create the server and agent nodes are included in the `./infrastructure` directory.
->
-> To speed things up, I pre-pulled the necessary images for this demo.  See `./infrastructure/agent_images.sh` for details.
-
 ### Start Rancher Server
 
-Our stable release of Rancher Server has everything built in to get you started as easily as possible.  When you're ready to put Rancher in production, check out 
+The rancher server takes a few minuets to initialize so I've gone ahead and set up my rancher server ahead of time, but the command looks like this.
 
 ``` bash
 docker run -d -p 8080 rancher/server:stable
@@ -124,7 +122,11 @@ kubectl run game --image=jgreat/2048:0.0.1 --port=80 --replicas 3
 
 ## So what did this do?
 
-This created a 3 types of objects.  First it created a Deployment, which created a replicaSet, which created a number of pods equal to the number of replicas we defined.
+``` shell
+kubectl get all
+```
+
+This created a 3 types of objects.  First it created a Deployment  replicaSet, which created a number of pods equal to the number of replicas we defined.
 
 ## Pods
 
@@ -148,13 +150,13 @@ Show details of a pod
 kubectl describe pod game-...
 ```
 
-Get a shell
+Just like docker we can run an exec and get a shell in the pod
 
 ``` shell
 kubectl exec -it game-... sh
 ```
 
-Show Logs
+Again just like docker we can grab the logs from a pod
 
 ``` shell
 kubectl logs -f game-...
@@ -202,10 +204,10 @@ Lets delete the existing deployment, by default this will cleanup all of its chi
 kubectl delete deployment game
 ```
 
-Since what we actually did was create a deployment, lets go ahead and create a manifest for that deployment.  The easiest way to get started with this is to use the same `run` command we used to create our initial deployment but add the `--dry-run` and the `-o yaml` options. We will redirect the output to a file.
+Since what we actually did with `kubectl run` was create a deployment, lets go ahead and create a manifest for that deployment.  The easiest way to get started with this is to use the same `run` command we used to create our initial deployment but add the `--dry-run` and the `-o yaml` options. We will redirect the output to a file.
 
 ``` shell
-kubectl run game --image=jgreat/2048:0.0.1 --port=80 --replicas 3 --record --dry-run -o yaml > game-deployment.yml
+kubectl run game --image=jgreat/2048:0.0.1 --port=80 --replicas 3 --dry-run -o yaml > game-deployment.yml
 ```
 
 ### Apply a manifest
@@ -228,7 +230,7 @@ vi game-deployment.yml
 
 Lets apply the updated manifest.
 
-Change the image value and update the change-cause annotation
+Change the image value
 
 ``` shell
 kubectl apply -f game-deployment.yml
@@ -248,6 +250,32 @@ kubectl rollout undo deployment/game
 
 ## Services
 
+So lets talk a bit about service discovery.
+
+By Default everything in a kubernetes cluster can talk to each other over the cluster overlay network.  But all the pods get random IP addresses and names, so how do you find and connect to these workloads?
+
+With services.
+
+Services provide two main functions
+consistent DNS and IP endpoint for communicating between workloads.
+and they also load balancing for the connections to your pods
+
+Launch another workload:
+
+``` shell
+kubectl apply -f ../shell/shell-deployment.yml
+```
+
+Shell into the pod
+
+``` shell
+kubectl exec -it shell-f45869cfb-krsj7 bash
+```
+
+Curl a pod...But that's not what we really want, we don't want to just connect to one pod we want to load balance across all the pods we create.
+
+Show service manifest
+
 ``` shell
 vi game-service.yml
 ```
@@ -261,13 +289,25 @@ show new service dns `game.default.svc.cluster.local`
 
 ## Ingress
 
+Now we can talk to workloads from inside the cluster, how do talk to them from the outside world?
+This is where Ingresses come in.
+
+Ingresses are layer 7 capable proxy services.
+
+Rancher comes with a built in ingress that is based on HAproxy.
+
 ``` shell
 kubectl apply -f game-ingress.yml
 ```
 
 show ingress
+
 ``` shell
 kubectl get ingress game -o wide
 ```
 
 Browse to game.jgreat.me
+
+## Bonus ConfigMaps
+
+

@@ -1,28 +1,24 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  annotations:
-    kubernetes.io/change-cause: update to image 0.0.2 
   creationTimestamp: null
   labels:
-    run: game
-  name: game
+    run: shell
+  name: shell
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
-      run: game
+      run: shell
   strategy: {}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        run: game
+        run: shell
     spec:
       containers:
-      - image: jgreat/2048:0.0.2
-        name: game
-        ports:
-        - containerPort: 80
+      - image: jgreat/shell
+        name: shell
         resources: {}
 status: {}
