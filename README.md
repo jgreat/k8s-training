@@ -16,9 +16,9 @@ This training is meant to give you a good introduction to some of the Kubernetes
 ## Installs
 If you want to follow along you'll need some kind of kubernetes environment with an Ingress controller installed.
 
-[Setting Up Rancher](setting-up-rancher.md)
-[docker-for-*](docker-for.md)
-[minikube](minikube.md)
+* [Setting Up Rancher](setting-up-rancher.md)
+* [docker-for-*](docker-for.md)
+* [minikube](minikube.md)
 
 ## Setting up `kubectl`
 
